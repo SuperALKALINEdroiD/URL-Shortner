@@ -4,6 +4,11 @@ import { urlRouter } from './routes/url.js';
 import { analyticsRouter } from './routes/analytics.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { rateLimit } from 'express-rate-limit';
+import swaggerJSDoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
+import { swaggerOptions } from './config/swagger.js';
+
+const openapiSpecification = swaggerJSDoc(swaggerOptions);
 
 dotenv.config();
 
@@ -18,6 +23,7 @@ const limiter = rateLimit({
 app.use(express.json());
 app.use(limiter);
 
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(openapiSpecification));
 app.use('/api/shorten', urlRouter);
 app.use('/api/analytics', analyticsRouter);
 
